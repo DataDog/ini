@@ -52,6 +52,7 @@ func (s *Section) NewKey(name, val string) (*Key, error) {
 
 	if inSlice(name, s.keyList) {
 		s.keys[name].value = val
+		s.keys[name].isStaticRef = s.f.StaticKeys && strings.Index(val, "%") != -1
 		return s.keys[name], nil
 	}
 
