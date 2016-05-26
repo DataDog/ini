@@ -56,7 +56,8 @@ func (s *Section) NewKey(name, val string) (*Key, error) {
 	}
 
 	s.keyList = append(s.keyList, name)
-	s.keys[name] = &Key{s, "", name, val, false}
+	isStaticRef := s.f.StaticKeys && strings.Index(val, "%") != -1
+	s.keys[name] = &Key{s, "", name, val, false, isStaticRef}
 	s.keysHash[name] = val
 	return s.keys[name], nil
 }
