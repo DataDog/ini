@@ -52,13 +52,13 @@ func (s *Section) NewKey(name, val string) (*Key, error) {
 
 	if inSlice(name, s.keyList) {
 		s.keys[name].value = val
-		s.keys[name].isStaticRef = s.f.StaticKeys && strings.Index(val, "%") != -1
+		s.keys[name].isStaticVal = s.f.StaticKeys && strings.Index(val, "%") == -1
 		return s.keys[name], nil
 	}
 
 	s.keyList = append(s.keyList, name)
-	isStaticRef := s.f.StaticKeys && strings.Index(val, "%") != -1
-	s.keys[name] = &Key{s, "", name, val, false, isStaticRef}
+	isStaticVal := s.f.StaticKeys && strings.Index(val, "%") == -1
+	s.keys[name] = &Key{s, "", name, val, false, isStaticVal}
 	s.keysHash[name] = val
 	return s.keys[name], nil
 }

@@ -28,7 +28,7 @@ type Key struct {
 	name        string
 	value       string
 	isAutoIncr  bool
-	isStaticRef bool
+	isStaticVal bool
 }
 
 // Name returns name of key.
@@ -44,7 +44,7 @@ func (k *Key) Value() string {
 // String returns string representation of value.
 func (k *Key) String() string {
 	val := k.value
-	if !k.isStaticRef || strings.Index(val, "%") != -1 {
+	if k.isStaticVal || strings.Index(val, "%") == -1 {
 		return val
 	}
 

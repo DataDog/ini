@@ -294,17 +294,16 @@ func (f *File) parse(reader io.Reader) (err error) {
 			p.count++
 		}
 
-		key, err := section.NewKey(kname, "")
-		if err != nil {
-			return err
-		}
-		key.isAutoIncr = isAutoIncr
-
 		value, err := p.readValue(line[offset:])
 		if err != nil {
 			return err
 		}
-		key.SetValue(value)
+
+		key, err := section.NewKey(kname, value)
+		if err != nil {
+			return err
+		}
+		key.isAutoIncr = isAutoIncr
 		key.Comment = strings.TrimSpace(p.comment.String())
 		p.comment.Reset()
 	}
