@@ -23,11 +23,12 @@ import (
 
 // Key represents a key under a section.
 type Key struct {
-	s          *Section
-	Comment    string
-	name       string
-	value      string
-	isAutoIncr bool
+	s           *Section
+	Comment     string
+	name        string
+	value       string
+	isAutoIncr  bool
+	isStaticVal bool
 }
 
 // Name returns name of key.
@@ -43,7 +44,7 @@ func (k *Key) Value() string {
 // String returns string representation of value.
 func (k *Key) String() string {
 	val := k.value
-	if strings.Index(val, "%") == -1 {
+	if k.isStaticVal || strings.Index(val, "%") == -1 {
 		return val
 	}
 
