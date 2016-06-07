@@ -307,15 +307,25 @@ func (s *Section) mapTo(val reflect.Value) error {
 				field.Set(reflect.New(tpField.Type.Elem()))
 			}
 		} else if isAnonymous {
-			field.Set(reflect.New(tpField.Type.Elem()))
+			if field.Elem() == reflect.Zero(reflect.TypeOf(field.Elem())).Interface() {
+				field.Set(reflect.New(tpField.Type.Elem()))
+			}
 		}
 		if isAnonymous || isStruct || isStructPtr {
-			if sec, err := s.f.GetSection(fieldName); err == nil {
-				if err = sec.mapTo(field); err != nil {
+			if tags.NameOverride == "." {
+				if err := s.mapTo(field); err != nil {
 					return fmt.Errorf("error mapping field(%s): %v", fieldName, err)
+				} else if tags.MustExist {
+					return fmt.Errorf("%s defined with mustExist but field(%s) not found in loaded data: %v", tpField.Name, fieldName, err)
 				}
-			} else if tags.MustExist {
-				return fmt.Errorf("%s defined with mustExist but field(%s) not found in loaded data: %v", tpField.Name, fieldName, err)
+			} else {
+				if sec, err := s.f.GetSection(fieldName); err == nil {
+					if err = sec.mapTo(field); err != nil {
+						return fmt.Errorf("error mapping field(%s): %v", fieldName, err)
+					}
+				} else if tags.MustExist {
+					return fmt.Errorf("%s defined with mustExist but field(%s) not found in loaded data: %v", tpField.Name, fieldName, err)
+				}
 			}
 			continue
 		}

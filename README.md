@@ -691,6 +691,51 @@ type Person struct {
 // Will return error from MapTo (No field MyName and mustExist).
 ```
 
+Additionally, if you want compositional structs to parse the same section as they are composed in to, you can use the special `.` name override.
+
+```ini
+[Foo1]
+Bar=1
+Baz=2
+[Foo2]
+Bar=3
+Baz=4
+[Biff]
+Boff=5
+Baz=6
+```
+
+```go
+type Sub struct {
+	Baz int
+}
+
+type Foo struct {
+	Bar int
+	Sub     `ini:"."`
+}
+
+type Biff struct {
+	Boff int
+	Sub      `ini:"."`
+}
+
+type WholeConf struct {
+	Foo1 *Foo
+	Foo2 *Foo
+	Biff
+}
+```
+
+When mapped to, this will produce the equivalent of:
+```go
+WholeConf{
+	Foo1: &Foo{Bar: 1, Sub: Sub{Baz: 2}},
+	Foo2: &Foo{Bar: 3, Sub: Sub{Baz: 4}},
+    Biff: Biff{Boff: 5, Sub: Sub{Baz: 6}},
+}
+```
+
 ## Getting Help
 
 - [API Documentation](https://gowalker.org/gopkg.in/ini.v1)

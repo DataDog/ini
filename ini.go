@@ -130,6 +130,8 @@ type File struct {
 	looseMode bool
 
 	NameMapper
+
+	StaticKeys bool
 }
 
 // newFile initializes File object with given data sources.
@@ -140,6 +142,7 @@ func newFile(dataSources []dataSource, looseMode bool) *File {
 		sections:    make(map[string]*Section),
 		sectionList: make([]string, 0, 10),
 		looseMode:   looseMode,
+		StaticKeys:  false,
 	}
 }
 
